@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Irish Mortgage Market</title>
+  <style>
+    :root {
+      --primary: #5e5df8;
+      --primary-light: #eeeeff;
+      --primary-dark: #4a49c6;
+      --success: #0fac81;
+      --success-light: #e6f7f3;
+      --warning: #f59e0b;
+      --warning-light: #fef5e7;
+      --danger: #f87171;
+      --danger-light: #fee2e2;
+      --text-primary: #12131b;
+      --text-secondary: #646683;
+      --bg-light: #f9fafb;
+      --bg-white: #ffffff;
+      --border-light: #e9ebed;
+      --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.1);
+      --shadow-md: 0 4px 8px rgba(16, 24, 40, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 24px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    
+    .header-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    
+    .stat-card {
+      background-color: var(--bg-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+      border: 1px solid var(--border-light);
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .stat-highlight {
+      color: var(--primary);
+    }
+    
+    .section {
+      background-color: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .section-content {
+      padding: 20px;
+    }
+    
+    .detail-list {
+      list-style: none;
+    }
+    
+    .detail-item {
+      display: flex;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .detail-item:last-child {
+      border-bottom: none;
+    }
+    
+    .detail-icon {
+      flex-shrink: 0;
+      margin-right: 16px;
+      display: flex;
+      align-items: center;
+      color: var(--primary);
+    }
+    
+    .detail-content {
+      flex: 1;
+    }
+    
+    .detail-title {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    
+    .detail-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .risk-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    
+    .risk-item {
+      background-color: var(--danger-light);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border-left: 4px solid var(--danger);
+    }
+    
+    .risk-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .risk-icon {
+      margin-right: 8px;
+    }
+    
+    .risk-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .goal-list {
+      list-style: none;
+    }
+    
+    .goal-item {
+      background-color: var(--success-light);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+      border-left: 4px solid var(--success);
+    }
+    
+    .goal-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .goal-icon {
+      margin-right: 8px;
+    }
+    
+    .goal-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 8px;
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+    
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      position: relative;
+      padding-top: 24px;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 34px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--border-light);
+      z-index: 1;
+    }
+    
+    .timeline-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      width: 120px;
+    }
+    
+    .timeline-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: var(--bg-white);
+      border: 2px solid var(--primary);
+      margin-bottom: 12px;
+    }
+    
+    .timeline-dot.active {
+      background-color: var(--primary);
+    }
+    
+    .timeline-date {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    
+    .timeline-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .timeline {
+        overflow-x: auto;
+        padding-bottom: 16px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Irish Mortgage Market</h1>
+        <div class="header-subtitle">Market Overview & Business Strategy</div>
+      </div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Market Size (2023)</div>
+        <div class="stat-value"><span class="stat-highlight">49,898</span> approvals</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Broker Originated</div>
+        <div class="stat-value"><span class="stat-highlight">45%</span> of mortgages</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Approval Timeline</div>
+        <div class="stat-value"><span class="stat-highlight">4-8</span> weeks</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Active Brokers</div>
+        <div class="stat-value"><span class="stat-highlight">229</span> brokers</div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Market Landscape</h2>
+      </div>
+      <div class="section-content">
+        <ul class="detail-list">
+          <li class="detail-item">
+            <div class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div class="detail-content">
+              <div class="detail-title">Lender Landscape</div>
+              <div class="detail-description">10 end lenders plus credit unions currently active in the market</div>
+            </div>
+          </li>
+          
+          <li class="detail-item">
+            <div class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="detail-content">
+              <div class="detail-title">Credit Union Bodies</div>
+              <div class="detail-description">Direct to Credit Unions, CUDA, Irish League of Credit Unions</div>
+            </div>
+          </li>
+          
+          <li class="detail-item">
+            <div class="detail-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
+            <div class="detail-content">
+              <div class="detail-title">Broker Organizations</div>
+              <div class="detail-description">Association of Irish Mortgage Advisors (AIMA) - led by Trevor Grant<br>Brokers Ireland Network Services</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Business Goals</h2>
+      </div>
+      <div class="section-content">
+        <ul class="goal-list">
+          <li class="goal-item">
+            <div class="goal-title">
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </span>
+              Long-term Goal (2025/2026)
+            </div>
+            <div class="goal-description">Achieve €40k ARR by the end of Q1 2026</div>
+          </li>
+          
+          <li class="goal-item">
+            <div class="goal-title">
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </span>
+              12-month Goal
+            </div>
+            <div class="goal-description">Acquire 5 brokers OR 1 lender and 2 brokers</div>
+          </li>
+          
+          <li class="goal-item">
+            <div class="goal-title">
+              <span class="goal-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </span>
+              Product Timeline
+            </div>
+            <div class="goal-description">Beta product launch by end of July</div>
+          </li>
+        </ul>
+        
+       
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Key Risks</h2>
+      </div>
+      <div class="section-content">
+        <ul class="risk-list">
+          <li class="risk-item">
+            <div class="risk-title">
+              <span class="risk-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </span>
+              Product Delivery & Performance
+            </div>
+            <div class="risk-description">Primary concern is the timing of product delivery and performance when delivered</div>
+          </li>
+          
+          <li class="risk-item">
+            <div class="risk-title">
+              <span class="risk-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </span>
+              Timeline Pressure
+            </div>
+            <div class="risk-description">Only 2 months for beta testing before transition to paid customers</div>
+          </li>
+          
+          <li class="risk-item">
+            <div class="risk-title">
+              <span class="risk-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </span>
+              Revenue Timeline
+            </div>
+            <div class="risk-description">3-month introductory rate period after beta extends time to full revenue</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
