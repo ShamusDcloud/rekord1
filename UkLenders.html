@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Mortgage Lenders Dashboard</title>
+  <style>
+    :root {
+      --primary: #5e5df8;
+      --primary-light: #eeeeff;
+      --text-primary: #12131b;
+      --text-secondary: #646683;
+      --bg-light: #f9fafb;
+      --bg-white: #ffffff;
+      --border-light: #e9ebed;
+      --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.1);
+      --shadow-md: 0 4px 8px rgba(16, 24, 40, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    
+    .dashboard {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    
+    .stat-card {
+      background-color: var(--bg-white);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+      border: 1px solid var(--border-light);
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .section {
+      background-color: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .toggle-btn {
+      background-color: var(--bg-white);
+      color: var(--primary);
+      border: 1px solid var(--border-light);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .toggle-btn:hover {
+      background-color: var(--primary-light);
+    }
+    
+    .section-content {
+      padding: 20px;
+    }
+    
+    .major-banks {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    
+    .bank-card {
+      background-color: var(--bg-white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    
+    .bank-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+    
+    .logo-placeholder {
+      width: 80px;
+      height: 48px;
+      background-color: var(--primary-light);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .bank-name {
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    
+    .lender-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px 24px;
+    }
+    
+    .lender-item {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--text-primary);
+      transition: background-color 0.2s ease;
+    }
+    
+    .lender-item:hover {
+      background-color: var(--primary-light);
+    }
+    
+    @media (max-width: 1200px) {
+      .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (max-width: 1024px) {
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .lender-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .lender-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .major-banks {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+    
+    .tag-count {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+    
+    .new-entrants-header {
+      grid-column: 1 / -1;
+      margin: 30px 0 20px;
+      padding: 15px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+    
+    .new-entrants-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .category-header {
+      grid-column: 1 / -1;
+      margin: 16px 0 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .category-header h3 {
+      font-size: 16px;
+      color: var(--primary);
+    }
+    
+    .new-lender {
+      background-color: var(--primary-light);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <h1>UK Mortgage Lenders</h1>
+    </div>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-label">Total Lenders</div>
+        <div class="stat-value">93</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Major Banks</div>
+        <div class="stat-value">17</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Building Societies</div>
+        <div class="stat-value">34</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Traditional Specialized</div>
+        <div class="stat-value">31</div>
+      </div>
+      <div class="stat-card" style="background-color: var(--primary-light); border-color: var(--primary);">
+        <div class="stat-label" style="color: var(--primary);">New Market Entrants</div>
+        <div class="stat-value" style="color: var(--primary);">11</div>
+      </div>
+    </div>
+    
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Major Banks <span class="tag tag-count">17</span></h2>
+        <button class="toggle-btn" onclick="toggleSection('major-banks-content')">Hide</button>
+      </div>
+      <div id="major-banks-content" class="section-content">
+        <div class="major-banks">
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Bank of China (UK)</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Bank of Ireland (UK)</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Barclays</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Clydesdale Bank PLC</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">First Direct</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Halifax</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">HSBC</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Lloyds Bank</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Metro Bank</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Nationwide Building Society</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Natwest Intermediary Solutions</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">RBS</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Santander</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Scottish Widows Bank</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Tesco Bank</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">TSB Bank</div>
+          </div>
+          <div class="bank-card">
+            <div class="logo-placeholder">Logo</div>
+            <div class="bank-name">Virgin Money plc</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Building Societies <span class="tag tag-count">34</span></h2>
+        <button class="toggle-btn" onclick="toggleSection('building-societies-content')">Show</button>
+      </div>
+      <div id="building-societies-content" class="section-content hidden">
+        <div class="lender-list">
+          <div class="lender-item">Airdrie Savings Bank</div>
+          <div class="lender-item">Bath Building Society</div>
+          <div class="lender-item">Buckinghamshire Building Society</div>
+          <div class="lender-item">Cambridge Building Society</div>
+          <div class="lender-item">Chorley & District Building Society</div>
+          <div class="lender-item">Coventry Building Society</div>
+          <div class="lender-item">Darlington Building Society</div>
+          <div class="lender-item">Dudley Building Society</div>
+          <div class="lender-item">Ecology Building Society</div>
+          <div class="lender-item">Furness Building Society</div>
+          <div class="lender-item">Hanley Economic Building Society</div>
+          <div class="lender-item">Hinckley & Rugby Building Society</div>
+          <div class="lender-item">Ipswich Building Society</div>
+          <div class="lender-item">Leeds Building Society</div>
+          <div class="lender-item">Leek United Building Society</div>
+          <div class="lender-item">Loughborough Building Society</div>
+          <div class="lender-item">Mansfield Building Society</div>
+          <div class="lender-item">Market Harborough Building Society</div>
+          <div class="lender-item">Marsden Building Society</div>
+          <div class="lender-item">Melton Mowbray Building Society</div>
+          <div class="lender-item">Monmouthshire Building Society</div>
+          <div class="lender-item">Newcastle Building Society</div>
+          <div class="lender-item">Nottingham Building Society</div>
+          <div class="lender-item">Principality Building Society</div>
+          <div class="lender-item">Progressive Building Society</div>
+          <div class="lender-item">Saffron Building Society</div>
+          <div class="lender-item">Skipton Building Society</div>
+          <div class="lender-item">Stafford Railway Building Society</div>
+          <div class="lender-item">Swansea Building Society</div>
+          <div class="lender-item">Teachers Building Society</div>
+          <div class="lender-item">The Mortgage Works</div>
+          <div class="lender-item">Tipton Building Society</div>
+          <div class="lender-item">West Bromwich Building Society</div>
+          <div class="lender-item">Yorkshire Building Society</div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Specialized Mortgage Lenders <span class="tag tag-count">42</span></h2>
+        <button class="toggle-btn" onclick="toggleSection('specialized-lenders-content')">Show</button>
+      </div>
+      <div id="specialized-lenders-content" class="section-content hidden">
+        <div class="lender-list">
+          <div class="lender-item">Accord Mortgages</div>
+          <div class="lender-item">Aldermore Bank</div>
+          <div class="lender-item">ATOM Bank</div>
+          <div class="lender-item">Bluestone</div>
+          <div class="lender-item">BM Solutions</div>
+          <div class="lender-item">BuildLoan</div>
+          <div class="lender-item">Castle Trust</div>
+          <div class="lender-item">Fleet Mortgages</div>
+          <div class="lender-item">Foundation Home Loans</div>
+          <div class="lender-item">Godiva</div>
+          <div class="lender-item">Kent Reliance Bank</div>
+          <div class="lender-item">Kensington Mortgage Company Limited</div>
+          <div class="lender-item">Landbay</div>
+          <div class="lender-item">Magellan Homeloans</div>
+          <div class="lender-item">Masthaven Bank</div>
+          <div class="lender-item">MBS Lending Ltd</div>
+          <div class="lender-item">Mortgage Trust</div>
+          <div class="lender-item">New Street</div>
+          <div class="lender-item">Paragon Mortgages</div>
+          <div class="lender-item">Pepper Homeloans</div>
+          <div class="lender-item">Platform</div>
+          <div class="lender-item">Post Office</div>
+          <div class="lender-item">Precise Mortgages</div>
+          <div class="lender-item">Secure Trust</div>
+          <div class="lender-item">Shawbrook Bank Limited</div>
+          <div class="lender-item">TFC Homeloans</div>
+          <div class="lender-item">The Mortgage Lender</div>
+          <div class="lender-item">Together</div>
+          <div class="lender-item">United Trust Bank</div>
+          <div class="lender-item">Vernon</div>
+          <div class="lender-item">Vida Homeloans</div>
+          
+          <div class="new-entrants-header">
+            <h2>NEW MARKET ENTRANTS</h2>
+          </div>
+          
+          <div class="category-header">
+            <h3>Digital-First Banks</h3>
+          </div>
+          <div class="lender-item new-lender">Monzo</div>
+          <div class="lender-item new-lender">Starling Bank</div>
+          <div class="lender-item new-lender">Chase/J.P. Morgan</div>
+          
+          <div class="category-header">
+            <h3>Innovative Mortgage Products</h3>
+          </div>
+          <div class="lender-item new-lender">Generation Home</div>
+          <div class="lender-item new-lender">Perenna</div>
+          <div class="lender-item new-lender">Habito One</div>
+          
+          <div class="category-header">
+            <h3>Digital Property Finance</h3>
+          </div>
+          <div class="lender-item new-lender">Molo Finance</div>
+          
+          <div class="category-header">
+            <h3>International Entrants</h3>
+          </div>
+          <div class="lender-item new-lender">Danske Bank</div>
+          
+          <div class="category-header">
+            <h3>Non-Bank Specialists</h3>
+          </div>
+          <div class="lender-item new-lender">Lendco</div>
+          <div class="lender-item new-lender">Octane Capital</div>
+          <div class="lender-item new-lender">West One Loans</div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <script>
+    function toggleSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      const button = section.parentNode.querySelector('.toggle-btn');
+      
+      if (section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+        button.textContent = 'Hide';
+      } else {
+        section.classList.add('hidden');
+        button.textContent = 'Show';
+      }
+    }
+    
+    // Open the first section by default
+    document.addEventListener('DOMContentLoaded', function() {
+      // The Major Banks section is already visible by default
+    });
+  </script>
+</body>
+</html>
